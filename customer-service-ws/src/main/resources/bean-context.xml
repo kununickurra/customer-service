@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:beans="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:jaxws="http://cxf.apache.org/jaxws"
+       xmlns:httpj="http://cxf.apache.org/transports/http-jetty/configuration"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="
+       http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://cxf.apache.org/jaxws
+       http://cxf.apache.org/schemas/jaxws.xsd
+       http://cxf.apache.org/transports/http-jetty/configuration
+       http://cxf.apache.org/schemas/configuration/http-jetty.xsd
+       http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+
+    <context:component-scan base-package="com.cgi.poc.customer.service"/>
+
+    <import resource="classpath:META-INF/cxf/cxf.xml"/>
+
+    <!-- End point declaration -->
+    <jaxws:endpoint id="CustomerService" implementor="com.cgi.poc.customer.service.impl.CustomerServiceImpl"
+                    address="http://localhost:9001/CustomerService"/>
+
+    <!-- Very simple Jetty configuration that allows easy web service testing & deployment -->
+    <httpj:engine-factory bus="cxf">
+        <httpj:engine port="9001">
+            <httpj:connector>
+                <beans:bean class="org.eclipse.jetty.server.bio.SocketConnector">
+                    <beans:property name="port" value="9001"/>
+                </beans:bean>
+            </httpj:connector>
+        </httpj:engine>
+    </httpj:engine-factory>
+
+</beans>
