@@ -134,7 +134,6 @@ public class CustomerServiceImplTest {
         assertThat(actual.getFirstName(), equalTo(expected.getFirstName()));
         assertThat(actual.getLastName(), equalTo(expected.getLastName()));
         assertThat(actual.getNiss(), equalTo(expected.getNiss()));
-        assertTrue(DateUtils.isSameDay(actual.getBirthDate().toGregorianCalendar(),
-                expected.getBirthDate().toGregorianCalendar()));
+        assertThat(actual.getBirthDate(), equalTo(expected.getBirthDate()));
     }
 }

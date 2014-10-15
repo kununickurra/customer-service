@@ -28,9 +28,17 @@ public class CustomerTestFixtures {
         // Initialize default birth date for a customer that has 18 years old.
         ENTITY_BIRTH_DATE = new GregorianCalendar();
         ENTITY_BIRTH_DATE.add(Calendar.YEAR, -18);
+        // Scrap time info
+        ENTITY_BIRTH_DATE.set(Calendar.HOUR_OF_DAY, 0);
+        ENTITY_BIRTH_DATE.set(Calendar.MINUTE, 0);
+        ENTITY_BIRTH_DATE.set(Calendar.SECOND, 0);
+        ENTITY_BIRTH_DATE.set(Calendar.MILLISECOND, 0);
         // Initialize the XMLGregorianCalendar based on the Entity Birth date create above.
         try {
-            DTO_BIRTH_DATE = DatatypeFactory.newInstance().newXMLGregorianCalendar(ENTITY_BIRTH_DATE);
+            DTO_BIRTH_DATE = DatatypeFactory.newInstance().newXMLGregorianCalendar();
+            DTO_BIRTH_DATE.setDay(ENTITY_BIRTH_DATE.get(Calendar.DAY_OF_MONTH));
+            DTO_BIRTH_DATE.setMonth(ENTITY_BIRTH_DATE.get(Calendar.MONTH) + 1);
+            DTO_BIRTH_DATE.setYear(ENTITY_BIRTH_DATE.get(Calendar.YEAR));
         } catch (DatatypeConfigurationException e) {
             throw new IllegalStateException();
         }

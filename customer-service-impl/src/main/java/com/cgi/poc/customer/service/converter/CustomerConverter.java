@@ -58,7 +58,7 @@ public class CustomerConverter {
             XMLGregorianCalendar xmlGregorianCalendar = DatatypeFactory.newInstance().newXMLGregorianCalendar();
             // Just copy the date as we are not interested in the time information.
             xmlGregorianCalendar.setDay(calendar.get(Calendar.DAY_OF_MONTH));
-            xmlGregorianCalendar.setMonth(calendar.get(Calendar.MONTH));
+            xmlGregorianCalendar.setMonth(calendar.get(Calendar.MONTH) + 1);
             xmlGregorianCalendar.setYear(calendar.get(Calendar.YEAR));
             return xmlGregorianCalendar;
         } catch (DatatypeConfigurationException e) {
