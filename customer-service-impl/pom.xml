@@ -12,29 +12,24 @@
     <artifactId>customer-service-impl</artifactId>
     <dependencies>
         <dependency>
-            <groupId>cgi-demo-app</groupId>
-            <artifactId>customer-service-entity</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>cgi-demo-app</groupId>
-            <artifactId>customer-service-dao</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.cgi.poc</groupId>
-            <artifactId>customer-service-spec-server-jaxws</artifactId>
-            <version>${customer.service.spec.server.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.cgi.poc</groupId>
-            <artifactId>customer-service-spec</artifactId>
-            <version>${customer.service.spec.server.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-context</artifactId>
-        </dependency>
+        <groupId>cgi-demo-app</groupId>
+        <artifactId>customer-service-entity</artifactId>
+        <version>${project.version}</version>
+    </dependency>
+    <dependency>
+        <groupId>cgi-demo-app</groupId>
+        <artifactId>customer-service-dao</artifactId>
+        <version>${project.version}</version>
+    </dependency>
+    <dependency>
+        <groupId>com.cgi.poc</groupId>
+        <artifactId>customer-service-spec-server-jaxws</artifactId>
+        <version>${customer.service.spec.server.version}</version>
+    </dependency>
+    <dependency>
+        <groupId>org.springframework</groupId>
+        <artifactId>spring-context</artifactId>
+    </dependency>
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>

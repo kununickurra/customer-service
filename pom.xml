@@ -20,7 +20,7 @@
         <org.springframework.version>4.1.0.RELEASE</org.springframework.version>
         <junit.version>4.8.1</junit.version>
         <org.mockito.version>1.9.0</org.mockito.version>
-        <customer.service.spec.server.version>0.0.1-SNAPSHOT</customer.service.spec.server.version>
+        <customer.service.spec.server.version>0.0.2-SNAPSHOT</customer.service.spec.server.version>
     </properties>
     <dependencyManagement>
         <dependencies>

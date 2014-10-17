@@ -1,6 +1,7 @@
 package com.cgi.poc.customer.service.fixture;
 
 import com.cgi.poc.customer.service.converter.CustomerConverter;
+import com.cgi.poc.customer.service.converter.DateConverter;
 import com.cgi.poc.customer.service.entity.Customer;
 import com.cgi.service.customer.dto.CustomerType;
 
@@ -8,6 +9,7 @@ import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.GregorianCalendar;
 
 /**
@@ -21,27 +23,21 @@ public class CustomerTestFixtures {
 
     private static final String LAST_NAME = "Last";
     private static final String FIRST_NAME = "First";
-    private static final GregorianCalendar ENTITY_BIRTH_DATE;
+    public static final Date ENTITY_BIRTH_DATE;
     public static final XMLGregorianCalendar DTO_BIRTH_DATE;
 
     static {
-        // Initialize default birth date for a customer that has 18 years old.
-        ENTITY_BIRTH_DATE = new GregorianCalendar();
-        ENTITY_BIRTH_DATE.add(Calendar.YEAR, -18);
-        // Scrap time info
-        ENTITY_BIRTH_DATE.set(Calendar.HOUR_OF_DAY, 0);
-        ENTITY_BIRTH_DATE.set(Calendar.MINUTE, 0);
-        ENTITY_BIRTH_DATE.set(Calendar.SECOND, 0);
-        ENTITY_BIRTH_DATE.set(Calendar.MILLISECOND, 0);
-        // Initialize the XMLGregorianCalendar based on the Entity Birth date create above.
-        try {
-            DTO_BIRTH_DATE = DatatypeFactory.newInstance().newXMLGregorianCalendar();
-            DTO_BIRTH_DATE.setDay(ENTITY_BIRTH_DATE.get(Calendar.DAY_OF_MONTH));
-            DTO_BIRTH_DATE.setMonth(ENTITY_BIRTH_DATE.get(Calendar.MONTH) + 1);
-            DTO_BIRTH_DATE.setYear(ENTITY_BIRTH_DATE.get(Calendar.YEAR));
-        } catch (DatatypeConfigurationException e) {
-            throw new IllegalStateException();
-        }
+        // Initialize default birth date for a customer that has just about 18 years old.
+        GregorianCalendar gregorianCalendar = new GregorianCalendar();
+        gregorianCalendar.add(Calendar.YEAR, -18);
+        gregorianCalendar.set(Calendar.HOUR_OF_DAY, 0);
+        gregorianCalendar.set(Calendar.MINUTE, 0);
+        gregorianCalendar.set(Calendar.SECOND, 0);
+        gregorianCalendar.set(Calendar.MILLISECOND, 0);
+        ENTITY_BIRTH_DATE = gregorianCalendar.getTime();
+        // Transform it into an toXMLGregorianCalendar using DateConverter.
+        // Thus can be done here as the DateConverter is tested separately in it's own test class.
+        DTO_BIRTH_DATE = new DateConverter().toXMLGregorianCalendar(ENTITY_BIRTH_DATE);
     }
 
     public static Customer createCustomerEntity() {
@@ -49,7 +45,7 @@ public class CustomerTestFixtures {
         entity.setLastName(LAST_NAME);
         entity.setFirstName(FIRST_NAME);
         entity.setNationalNumber(DEFAULT_NATIONAL_NUMBER);
-        entity.setBirthDate(ENTITY_BIRTH_DATE.getTime());
+        entity.setBirthDate(ENTITY_BIRTH_DATE);
         return entity;
     }
 
