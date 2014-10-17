@@ -29,6 +29,13 @@ public class CustomerServiceImpl implements CustomerService {
     @Autowired
     private CustomerDAO<String, Customer> customerDAO;
 
+    /**
+     * Retrieve a Customer using its National Number (Niss)
+     *
+     * @param GetCustomerByNissRequestDTO that contains the national number to search for.
+     * @return GetCustomerByNissResponseDTO with CustomerType containing a reference to the customer or with
+     * a <b>null</b> reference in cas no customer has been found using the provided national number
+     */
     @Override
     public GetCustomerByNissResponseDTO getCustomerByNiss(@WebParam(partName = "parameters", name = "getCustomerByNissRequest", targetNamespace = "http://service.cgi.com/customer") GetCustomerByNissRequestDTO getCustomerByNissRequestDTO) {
 
@@ -40,6 +47,13 @@ public class CustomerServiceImpl implements CustomerService {
         return response;
     }
 
+    /**
+     * Register a new customer in the system
+     *
+     * @param RegisterCustomerRequestDTO that contains the new customer to register.
+     * @throws CustomerTooYoungFault in case the customer does not have the minimal age to register to this service
+     * @throws DuplicateNissFault in case a customer with the same the national number already exists in the system.
+     */
     @Override
     public void registerCustomer(@WebParam(partName = "parameters", name = "registerCustomerRequest", targetNamespace = "http://service.cgi.com/customer") RegisterCustomerRequestDTO registerCustomerRequestDTO) throws CustomerTooYoungFault, DuplicateNissFault {
 

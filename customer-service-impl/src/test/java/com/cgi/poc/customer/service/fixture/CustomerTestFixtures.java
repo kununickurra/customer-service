@@ -36,7 +36,7 @@ public class CustomerTestFixtures {
         gregorianCalendar.set(Calendar.MILLISECOND, 0);
         ENTITY_BIRTH_DATE = gregorianCalendar.getTime();
         // Transform it into an toXMLGregorianCalendar using DateConverter.
-        // Thus can be done here as the DateConverter is tested separately in it's own test class.
+        // This can be done here as the DateConverter is tested separately in it's own test class.
         DTO_BIRTH_DATE = new DateConverter().toXMLGregorianCalendar(ENTITY_BIRTH_DATE);
     }
 

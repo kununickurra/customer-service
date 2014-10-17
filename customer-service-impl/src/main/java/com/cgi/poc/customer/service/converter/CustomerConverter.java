@@ -33,7 +33,6 @@ public class CustomerConverter {
         entity.setFirstName(dto.getFirstName());
         entity.setLastName(dto.getLastName());
         entity.setNationalNumber(dto.getNiss());
-        System.out.println(dto.getBirthDate());
         entity.setBirthDate(dto.getBirthDate().toGregorianCalendar().getTime());
         return entity;
     }
