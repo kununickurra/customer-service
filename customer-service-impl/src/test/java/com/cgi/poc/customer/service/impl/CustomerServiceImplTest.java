@@ -57,7 +57,7 @@ public class CustomerServiceImplTest {
     }
 
     @Test
-    public void shouldNotFailWhenRetrieveNonExistingCustomerByNationalNumberSuccessfully() throws Exception {
+    public void shouldNotFailWhenRetrievingNonExistingCustomerByNationalNumber() throws Exception {
         // Given
         GetCustomerByNissRequestDTO request = new GetCustomerByNissRequestDTO();
         request.setNiss(DEFAULT_NATIONAL_NUMBER);
@@ -88,7 +88,7 @@ public class CustomerServiceImplTest {
     }
 
     @Test(expected = CustomerTooYoungFault.class)
-    public void shouldRegistrationFailWhenRegisteringTooYoungConsumer() throws Exception {
+    public void shouldRegistrationFailWhenRegisteringMinorVisitor() throws Exception {
         Customer tooYoungCustomerEntityFixture = createTooYoungCustomerEntity();
         RegisterCustomerRequestDTO request = new RegisterCustomerRequestDTO();
         CustomerType customerDtoFixture = new CustomerType();
@@ -101,7 +101,6 @@ public class CustomerServiceImplTest {
             testedClass.registerCustomer(request);
         } finally {
             // Then
-            verify(mockCustomerConverter, times(1)).toEntity(request.getCustomer());
             verify(mockCustomerDAO, never()).store(any(Customer.class));
             verify(mockCustomerDAO, never()).findByNationalNumber(any(String.class));
         }

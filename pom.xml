@@ -3,11 +3,11 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-
-    <groupId>cgi-demo-app</groupId>
+    <groupId>com.cgi.poc</groupId>
     <artifactId>customer-service</artifactId>
     <packaging>pom</packaging>
     <version>0.0.1-SNAPSHOT</version>
+
     <modules>
         <module>customer-service-impl</module>
         <module>customer-service-ws</module>
@@ -20,7 +20,8 @@
         <org.springframework.version>4.1.0.RELEASE</org.springframework.version>
         <junit.version>4.8.1</junit.version>
         <org.mockito.version>1.9.0</org.mockito.version>
-        <customer.service.spec.server.version>0.0.2-SNAPSHOT</customer.service.spec.server.version>
+        <customer.service.spec.server.version>1.0.1-SNAPSHOT</customer.service.spec.server.version>
+        <org.slf4j.version>1.7.6</org.slf4j.version>
     </properties>
     <dependencyManagement>
         <dependencies>
@@ -31,8 +32,33 @@
             </dependency>
             <dependency>
                 <groupId>com.cgi.poc</groupId>
-                <artifactId>customer-service-spec-server-jaxws</artifactId>
+                <artifactId>customer-service-impl</artifactId>
                 <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.cgi.poc</groupId>
+                <artifactId>customer-service-dao</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.cgi.poc</groupId>
+                <artifactId>customer-service-entity</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.cgi.poc</groupId>
+                <artifactId>customer-service-spec-server-jaxws</artifactId>
+                <version>${customer.service.spec.server.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-context</artifactId>
+                <version>${org.springframework.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-lang3</artifactId>
+                <version>${org.apache.commons.lang3.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.cxf</groupId>
@@ -45,29 +71,36 @@
                 <version>${org.apache.cxf.version}</version>
             </dependency>
             <dependency>
-                <groupId>org.springframework</groupId>
-                <artifactId>spring-context</artifactId>
-                <version>${org.springframework.version}</version>
+                <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-api</artifactId>
+                <version>${org.slf4j.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.mockito</groupId>
                 <artifactId>mockito-core</artifactId>
                 <version>${org.mockito.version}</version>
-                <scope>test</scope>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.commons</groupId>
-                <artifactId>commons-lang3</artifactId>
-                <version>${org.apache.commons.lang3.version}</version>
             </dependency>
             <dependency>
                 <groupId>junit</groupId>
                 <artifactId>junit</artifactId>
                 <version>${junit.version}</version>
-                <scope>test</scope>
             </dependency>
         </dependencies>
     </dependencyManagement>
     <dependencies>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 </project>
