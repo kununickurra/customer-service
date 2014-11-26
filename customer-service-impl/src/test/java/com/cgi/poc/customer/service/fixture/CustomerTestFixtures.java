@@ -58,7 +58,7 @@ public class CustomerTestFixtures {
         return dto;
     }
 
-    public static Customer createTooYoungCustomerEntity() {
+    public static Customer createMinorCustomerEntity() {
         // Create a customer that is 1 day too young to be allowed to register.
         // Default is 18 years old.
         Customer customer = createCustomerEntity();

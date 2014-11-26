@@ -89,12 +89,12 @@ public class CustomerServiceImplTest {
 
     @Test(expected = CustomerTooYoungFault.class)
     public void shouldRegistrationFailWhenRegisteringMinorVisitor() throws Exception {
-        Customer tooYoungCustomerEntityFixture = createTooYoungCustomerEntity();
+        Customer minorCustomerEntityFixture = createMinorCustomerEntity();
         RegisterCustomerRequestDTO request = new RegisterCustomerRequestDTO();
         CustomerType customerDtoFixture = new CustomerType();
         request.setCustomer(customerDtoFixture);
         // Given
-        given(mockCustomerConverter.toEntity(customerDtoFixture)).willReturn(tooYoungCustomerEntityFixture);
+        given(mockCustomerConverter.toEntity(customerDtoFixture)).willReturn(minorCustomerEntityFixture);
         given(mockCustomerDAO.findByNationalNumber(DEFAULT_NATIONAL_NUMBER)).willReturn(null);
         // When
         try {
@@ -107,7 +107,7 @@ public class CustomerServiceImplTest {
     }
 
     @Test(expected = DuplicateNissFault.class)
-    public void shouldRegistrationFailWhenRegisteringDuplicateNatiolanNumber() throws Exception {
+    public void shouldRegistrationFailWhenRegisteringDuplicateNationalNumber() throws Exception {
         Customer successfulCustomerEntityFixture = createCustomerEntity();
         RegisterCustomerRequestDTO request = new RegisterCustomerRequestDTO();
         CustomerType customerDtoFixture = new CustomerType();
