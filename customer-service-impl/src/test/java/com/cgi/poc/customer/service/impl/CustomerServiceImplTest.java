@@ -10,7 +10,6 @@ import com.cgi.service.customer.dto.CustomerType;
 import com.cgi.service.customer.dto.GetCustomerByNissRequestDTO;
 import com.cgi.service.customer.dto.GetCustomerByNissResponseDTO;
 import com.cgi.service.customer.dto.RegisterCustomerRequestDTO;
-import org.apache.commons.lang3.time.DateUtils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -39,16 +38,14 @@ public class CustomerServiceImplTest {
 
     @Test
     public void shouldRetrieveCustomerByNationalNumberSuccessfully() throws Exception {
-
+        // Given
         Customer customerEntityFixture = createCustomerEntity();
         CustomerType customerDtoFixture = createCustomerDTO();
-
-        GetCustomerByNissRequestDTO request = new GetCustomerByNissRequestDTO();
-        request.setNiss(DEFAULT_NATIONAL_NUMBER);
-        // Given
         given(mockCustomerDAO.findByNationalNumber(DEFAULT_NATIONAL_NUMBER)).willReturn(customerEntityFixture);
         given(mockCustomerConverter.toDto(customerEntityFixture)).willReturn(customerDtoFixture);
         // When
+        GetCustomerByNissRequestDTO request = new GetCustomerByNissRequestDTO();
+        request.setNiss(DEFAULT_NATIONAL_NUMBER);
         GetCustomerByNissResponseDTO dto = testedClass.getCustomerByNiss(request);
         // Then
         verifyDtoContent(dto.getCustomer(), customerDtoFixture);
@@ -57,7 +54,7 @@ public class CustomerServiceImplTest {
     }
 
     @Test
-    public void shouldNotFailWhenRetrievingNonExistingCustomerByNationalNumber() throws Exception {
+    public void shouldReturnNullValueWhenRetrievingNonExistingCustomerByNationalNumber() throws Exception {
         // Given
         GetCustomerByNissRequestDTO request = new GetCustomerByNissRequestDTO();
         request.setNiss(DEFAULT_NATIONAL_NUMBER);
@@ -72,14 +69,14 @@ public class CustomerServiceImplTest {
 
     @Test
     public void shouldRegisterNewCustomerSuccessFully() throws Exception {
-        Customer successfulCustomerEntityFixture = createCustomerEntity();
-        RegisterCustomerRequestDTO request = new RegisterCustomerRequestDTO();
-        CustomerType customerDtoFixture = new CustomerType();
-        request.setCustomer(customerDtoFixture);
         // Given
+        Customer successfulCustomerEntityFixture = createCustomerEntity();
+        CustomerType customerDtoFixture = new CustomerType();
         given(mockCustomerConverter.toEntity(customerDtoFixture)).willReturn(successfulCustomerEntityFixture);
         given(mockCustomerDAO.findByNationalNumber(DEFAULT_NATIONAL_NUMBER)).willReturn(null);
         // When
+        RegisterCustomerRequestDTO request = new RegisterCustomerRequestDTO();
+        request.setCustomer(customerDtoFixture);
         testedClass.registerCustomer(request);
         // Then
         verify(mockCustomerConverter, times(1)).toEntity(request.getCustomer());
@@ -87,42 +84,47 @@ public class CustomerServiceImplTest {
         verify(mockCustomerDAO, times(1)).findByNationalNumber(successfulCustomerEntityFixture.getNationalNumber());
     }
 
-    @Test(expected = CustomerTooYoungFault.class)
-    public void shouldRegistrationFailWhenRegisteringMinorVisitor() throws Exception {
-        Customer minorCustomerEntityFixture = createMinorCustomerEntity();
-        RegisterCustomerRequestDTO request = new RegisterCustomerRequestDTO();
-        CustomerType customerDtoFixture = new CustomerType();
-        request.setCustomer(customerDtoFixture);
-        // Given
-        given(mockCustomerConverter.toEntity(customerDtoFixture)).willReturn(minorCustomerEntityFixture);
-        given(mockCustomerDAO.findByNationalNumber(DEFAULT_NATIONAL_NUMBER)).willReturn(null);
-        // When
-        try {
-            testedClass.registerCustomer(request);
-        } finally {
-            // Then
-            verify(mockCustomerDAO, never()).store(any(Customer.class));
-            verify(mockCustomerDAO, never()).findByNationalNumber(any(String.class));
-        }
-    }
-
     @Test(expected = DuplicateNissFault.class)
     public void shouldRegistrationFailWhenRegisteringDuplicateNationalNumber() throws Exception {
-        Customer successfulCustomerEntityFixture = createCustomerEntity();
-        RegisterCustomerRequestDTO request = new RegisterCustomerRequestDTO();
-        CustomerType customerDtoFixture = new CustomerType();
-        request.setCustomer(customerDtoFixture);
         // Given
-        when(mockCustomerConverter.toEntity(customerDtoFixture)).thenReturn(successfulCustomerEntityFixture);
-        when(mockCustomerDAO.findByNationalNumber(DEFAULT_NATIONAL_NUMBER)).thenReturn(new Customer());
+        Customer successfulCustomerEntityFixture = createCustomerEntity();
+        CustomerType customerDtoFixture = new CustomerType();
+        given(mockCustomerConverter.toEntity(customerDtoFixture)).willReturn(successfulCustomerEntityFixture);
+        given(mockCustomerDAO.findByNationalNumber(DEFAULT_NATIONAL_NUMBER)).willReturn(new Customer());
+
+        // When
+        RegisterCustomerRequestDTO request = new RegisterCustomerRequestDTO();
         try {
-            // When
+            request.setCustomer(customerDtoFixture);
             testedClass.registerCustomer(request);
+
         } finally {
             // Then
             verify(mockCustomerConverter, times(1)).toEntity(request.getCustomer());
             verify(mockCustomerDAO, times(1)).findByNationalNumber(successfulCustomerEntityFixture.getNationalNumber());
             verify(mockCustomerDAO, never()).store(any(Customer.class));
+        }
+    }
+
+    @Test(expected = CustomerTooYoungFault.class)
+    public void shouldRegistrationFailWhenTryingToRegisterMinorVisitor() throws Exception {
+        Customer minorCustomerEntityFixture = createMinorCustomerEntity();
+        CustomerType customerDtoFixture = new CustomerType();
+        // Given
+        given(mockCustomerConverter.toEntity(customerDtoFixture)).willReturn(minorCustomerEntityFixture);
+        given(mockCustomerDAO.findByNationalNumber(DEFAULT_NATIONAL_NUMBER)).willReturn(null);
+
+        // When
+        RegisterCustomerRequestDTO request = new RegisterCustomerRequestDTO();
+        request.setCustomer(customerDtoFixture);
+        try {
+            testedClass.registerCustomer(request);
+        } finally {
+            // Then
+            // Make sure that the customer entity is NOT stored!
+            verify(mockCustomerDAO, never()).store(any(Customer.class));
+            // Just to make sure that there is no useless call to
+            verify(mockCustomerDAO, never()).findByNationalNumber(any(String.class));
         }
     }
 

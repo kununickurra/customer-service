@@ -1,12 +1,9 @@
 package com.cgi.poc.customer.service.fixture;
 
-import com.cgi.poc.customer.service.converter.CustomerConverter;
 import com.cgi.poc.customer.service.converter.DateConverter;
 import com.cgi.poc.customer.service.entity.Customer;
 import com.cgi.service.customer.dto.CustomerType;
 
-import javax.xml.datatype.DatatypeConfigurationException;
-import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
 import java.util.Calendar;
 import java.util.Date;
@@ -19,6 +16,8 @@ public class CustomerTestFixtures {
 
     private CustomerTestFixtures() { /* Do not instantiate me */}
 
+    public static final int MINIMAL_AGE = 18;
+
     public static final String DEFAULT_NATIONAL_NUMBER = "1";
 
     private static final String LAST_NAME = "Last";
@@ -27,9 +26,10 @@ public class CustomerTestFixtures {
     public static final XMLGregorianCalendar DTO_BIRTH_DATE;
 
     static {
-        // Initialize default birth date for a customer that has just about 18 years old.
+        // Initialize default birth date
         GregorianCalendar gregorianCalendar = new GregorianCalendar();
-        gregorianCalendar.add(Calendar.YEAR, -18);
+        // Change the default date to test the edge case with a customer that has just the minimal age
+        gregorianCalendar.add(Calendar.YEAR, -MINIMAL_AGE);
         gregorianCalendar.set(Calendar.HOUR_OF_DAY, 0);
         gregorianCalendar.set(Calendar.MINUTE, 0);
         gregorianCalendar.set(Calendar.SECOND, 0);
@@ -60,10 +60,11 @@ public class CustomerTestFixtures {
 
     public static Customer createMinorCustomerEntity() {
         // Create a customer that is 1 day too young to be allowed to register.
-        // Default is 18 years old.
         Customer customer = createCustomerEntity();
         Calendar calendar = new GregorianCalendar();
-        calendar.add(Calendar.DATE, -1);
+        calendar.setTime(new Date(ENTITY_BIRTH_DATE.getTime()));
+        // Tomorrow I will be able to register but NOT today
+        calendar.add(Calendar.DATE, 1);
         customer.setBirthDate(calendar.getTime());
         return customer;
     }
