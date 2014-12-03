@@ -5,11 +5,6 @@ import com.cgi.service.customer.dto.CustomerType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import javax.xml.datatype.DatatypeConfigurationException;
-import javax.xml.datatype.DatatypeFactory;
-import javax.xml.datatype.XMLGregorianCalendar;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.GregorianCalendar;
 
 /**
@@ -22,6 +17,7 @@ public class CustomerConverter {
 
     @Autowired
     private DateConverter dateConverter;
+
     /**
      * Converts a {@link CustomerType} dto to {@link Customer} entity.
      *
@@ -32,7 +28,7 @@ public class CustomerConverter {
         Customer entity = new Customer();
         entity.setFirstName(dto.getFirstName());
         entity.setLastName(dto.getLastName());
-        entity.setNationalNumber(dto.getNiss());
+        entity.setNationalNumber(dto.getNationalNumber());
         entity.setBirthDate(dto.getBirthDate().toGregorianCalendar().getTime());
         return entity;
     }
@@ -48,7 +44,7 @@ public class CustomerConverter {
         CustomerType dto = new CustomerType();
         dto.setFirstName(entity.getFirstName());
         dto.setLastName(entity.getLastName());
-        dto.setNiss(entity.getNationalNumber());
+        dto.setNationalNumber(entity.getNationalNumber());
         GregorianCalendar gregorianCalendar = new GregorianCalendar();
         gregorianCalendar.setTime(entity.getBirthDate());
         dto.setBirthDate(dateConverter.toXMLGregorianCalendar(entity.getBirthDate()));

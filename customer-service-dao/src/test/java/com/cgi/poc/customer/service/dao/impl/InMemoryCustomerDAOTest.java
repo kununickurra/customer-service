@@ -1,4 +1,4 @@
-package com.cgi.poc.customer.service.dao;
+package com.cgi.poc.customer.service.dao.impl;
 
 
 import com.cgi.poc.customer.service.entity.Customer;
@@ -11,6 +11,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 import java.util.Map;
 
 import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.times;
@@ -28,7 +29,7 @@ public class InMemoryCustomerDAOTest {
     private InMemoryCustomerDAO testedClass = new InMemoryCustomerDAO();
 
     @Test
-    public void shouldFindCustomerByNationalNumber() throws Exception {
+    public void shouldFindCustomerByNationalNumberSuccessfully() throws Exception {
         // Given
         Customer expected = new Customer();
         given(storage.get(NATIONAL_NUMBER)).willReturn(expected);
@@ -40,7 +41,17 @@ public class InMemoryCustomerDAOTest {
     }
 
     @Test
-    public void shouldStoreCustomer() throws Exception {
+    public void shouldReturnNullWhenSearchingNonExistingCustomerByNationalNumber() throws Exception {
+        // Given
+        given(storage.get(NATIONAL_NUMBER)).willReturn(null);
+        // When
+        Customer actual = testedClass.findByNationalNumber(NATIONAL_NUMBER);
+        // Then
+        assertNull(actual);
+    }
+
+    @Test
+    public void shouldStoreCustomerSuccessfully() throws Exception {
         // Given
         Customer customer = new Customer();
         customer.setNationalNumber(NATIONAL_NUMBER);

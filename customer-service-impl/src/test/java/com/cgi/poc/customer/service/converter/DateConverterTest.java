@@ -8,14 +8,15 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertThat;
 
 public class DateConverterTest {
 
     private DateConverter testClass = new DateConverter();
 
     @Test
-    public void shouldScrapTimeInformationAndConvertToXMLGregorianCalendar() throws Exception {
+    public void shouldIgnoreTimeInformationAndConvertToXMLGregorianCalendar() throws Exception {
         // Given
         GregorianCalendar calendar = new GregorianCalendar();
         calendar.set(Calendar.DATE, 22);

@@ -7,10 +7,10 @@ import java.util.Date;
  */
 public class Customer {
 
+    private String nationalNumber;
     private String firstName;
     private String lastName;
     private Date birthDate;
-    private String nationalNumber;
 
     public String getFirstName() {
         return firstName;

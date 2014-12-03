@@ -3,13 +3,14 @@ package com.cgi.poc.customer.service.impl;
 import com.cgi.poc.customer.service.converter.CustomerConverter;
 import com.cgi.poc.customer.service.dao.CustomerDAO;
 import com.cgi.poc.customer.service.entity.Customer;
+import com.cgi.service.customer.CustomerNotAllowedFault;
 import com.cgi.service.customer.CustomerService;
-import com.cgi.service.customer.CustomerTooYoungFault;
-import com.cgi.service.customer.DuplicateNissFault;
+import com.cgi.service.customer.NationalNumberAlreadyRegisteredFault;
 import com.cgi.service.customer.dto.CustomerType;
-import com.cgi.service.customer.dto.GetCustomerByNissRequestDTO;
-import com.cgi.service.customer.dto.GetCustomerByNissResponseDTO;
+import com.cgi.service.customer.dto.GetCustomerByNationalNumberRequestDTO;
+import com.cgi.service.customer.dto.GetCustomerByNationalNumberResponseDTO;
 import com.cgi.service.customer.dto.RegisterCustomerRequestDTO;
+import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -18,6 +19,8 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 import static com.cgi.poc.customer.service.fixture.CustomerTestFixtures.*;
 import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.junit.Assert.*;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Matchers.any;
@@ -26,12 +29,11 @@ import static org.mockito.Mockito.*;
 @RunWith(MockitoJUnitRunner.class)
 public class CustomerServiceImplTest {
 
-
     @Mock
     private CustomerConverter mockCustomerConverter;
 
     @Mock
-    private CustomerDAO<String, Customer> mockCustomerDAO;
+    private CustomerDAO mockCustomerDAO;
 
     @InjectMocks
     private CustomerService testedClass = new CustomerServiceImpl();
@@ -39,41 +41,41 @@ public class CustomerServiceImplTest {
     @Test
     public void shouldRetrieveCustomerByNationalNumberSuccessfully() throws Exception {
         // Given
-        Customer customerEntityFixture = createCustomerEntity();
+        Customer customerEntityFixture = createValidCustomerEntity();
         CustomerType customerDtoFixture = createCustomerDTO();
-        given(mockCustomerDAO.findByNationalNumber(DEFAULT_NATIONAL_NUMBER)).willReturn(customerEntityFixture);
+        given(mockCustomerDAO.findByNationalNumber(NATIONAL_NUMBER)).willReturn(customerEntityFixture);
         given(mockCustomerConverter.toDto(customerEntityFixture)).willReturn(customerDtoFixture);
         // When
-        GetCustomerByNissRequestDTO request = new GetCustomerByNissRequestDTO();
-        request.setNiss(DEFAULT_NATIONAL_NUMBER);
-        GetCustomerByNissResponseDTO dto = testedClass.getCustomerByNiss(request);
+        GetCustomerByNationalNumberRequestDTO request = new GetCustomerByNationalNumberRequestDTO();
+        request.setNationalNumber(NATIONAL_NUMBER);
+        GetCustomerByNationalNumberResponseDTO dto = testedClass.getCustomerByNationalNumber(request);
         // Then
         verifyDtoContent(dto.getCustomer(), customerDtoFixture);
-        verify(mockCustomerDAO, times(1)).findByNationalNumber(DEFAULT_NATIONAL_NUMBER);
+        verify(mockCustomerDAO, times(1)).findByNationalNumber(NATIONAL_NUMBER);
         verify(mockCustomerConverter, times(1)).toDto(customerEntityFixture);
     }
 
     @Test
     public void shouldReturnNullValueWhenRetrievingNonExistingCustomerByNationalNumber() throws Exception {
         // Given
-        GetCustomerByNissRequestDTO request = new GetCustomerByNissRequestDTO();
-        request.setNiss(DEFAULT_NATIONAL_NUMBER);
-        given(mockCustomerDAO.findByNationalNumber(DEFAULT_NATIONAL_NUMBER)).willReturn(null);
+        GetCustomerByNationalNumberRequestDTO request = new GetCustomerByNationalNumberRequestDTO();
+        request.setNationalNumber(NATIONAL_NUMBER);
+        given(mockCustomerDAO.findByNationalNumber(NATIONAL_NUMBER)).willReturn(null);
         // When
-        GetCustomerByNissResponseDTO dto = testedClass.getCustomerByNiss(request);
+        GetCustomerByNationalNumberResponseDTO dto = testedClass.getCustomerByNationalNumber(request);
         // Then
         assertNull(dto.getCustomer());
-        verify(mockCustomerDAO, times(1)).findByNationalNumber(DEFAULT_NATIONAL_NUMBER);
+        verify(mockCustomerDAO, times(1)).findByNationalNumber(NATIONAL_NUMBER);
         verify(mockCustomerConverter, never()).toDto(any(Customer.class));
     }
 
     @Test
     public void shouldRegisterNewCustomerSuccessFully() throws Exception {
         // Given
-        Customer successfulCustomerEntityFixture = createCustomerEntity();
+        Customer successfulCustomerEntityFixture = createValidCustomerEntity();
         CustomerType customerDtoFixture = new CustomerType();
         given(mockCustomerConverter.toEntity(customerDtoFixture)).willReturn(successfulCustomerEntityFixture);
-        given(mockCustomerDAO.findByNationalNumber(DEFAULT_NATIONAL_NUMBER)).willReturn(null);
+        given(mockCustomerDAO.findByNationalNumber(NATIONAL_NUMBER)).willReturn(null);
         // When
         RegisterCustomerRequestDTO request = new RegisterCustomerRequestDTO();
         request.setCustomer(customerDtoFixture);
@@ -84,20 +86,19 @@ public class CustomerServiceImplTest {
         verify(mockCustomerDAO, times(1)).findByNationalNumber(successfulCustomerEntityFixture.getNationalNumber());
     }
 
-    @Test(expected = DuplicateNissFault.class)
+    @Test(expected = NationalNumberAlreadyRegisteredFault.class)
     public void shouldRegistrationFailWhenRegisteringDuplicateNationalNumber() throws Exception {
         // Given
-        Customer successfulCustomerEntityFixture = createCustomerEntity();
+        Customer successfulCustomerEntityFixture = createValidCustomerEntity();
         CustomerType customerDtoFixture = new CustomerType();
         given(mockCustomerConverter.toEntity(customerDtoFixture)).willReturn(successfulCustomerEntityFixture);
-        given(mockCustomerDAO.findByNationalNumber(DEFAULT_NATIONAL_NUMBER)).willReturn(new Customer());
+        given(mockCustomerDAO.findByNationalNumber(NATIONAL_NUMBER)).willReturn(new Customer());
 
         // When
         RegisterCustomerRequestDTO request = new RegisterCustomerRequestDTO();
         try {
             request.setCustomer(customerDtoFixture);
             testedClass.registerCustomer(request);
-
         } finally {
             // Then
             verify(mockCustomerConverter, times(1)).toEntity(request.getCustomer());
@@ -106,13 +107,13 @@ public class CustomerServiceImplTest {
         }
     }
 
-    @Test(expected = CustomerTooYoungFault.class)
+    @Test(expected = CustomerNotAllowedFault.class)
     public void shouldRegistrationFailWhenTryingToRegisterMinorVisitor() throws Exception {
         Customer minorCustomerEntityFixture = createMinorCustomerEntity();
         CustomerType customerDtoFixture = new CustomerType();
         // Given
         given(mockCustomerConverter.toEntity(customerDtoFixture)).willReturn(minorCustomerEntityFixture);
-        given(mockCustomerDAO.findByNationalNumber(DEFAULT_NATIONAL_NUMBER)).willReturn(null);
+        given(mockCustomerDAO.findByNationalNumber(NATIONAL_NUMBER)).willReturn(null);
 
         // When
         RegisterCustomerRequestDTO request = new RegisterCustomerRequestDTO();
@@ -129,12 +130,13 @@ public class CustomerServiceImplTest {
     }
 
     private void verifyDtoContent(CustomerType actual, CustomerType expected) {
-        // Make sure it is not not null by checking with an assertNotNull so that error messages will be more clean
+        // Make sure it is not null with an error messages will be more clean
         // than a nullPointerException on the next assertion.
-        assertNotNull("Returned customer cannot be null", actual);
+        assertThat("Expecting a customer and not a null value", actual, is(notNullValue()));
+        assertThat(EqualsBuilder.reflectionEquals(actual, expected), is(true));
         assertThat(actual.getFirstName(), equalTo(expected.getFirstName()));
         assertThat(actual.getLastName(), equalTo(expected.getLastName()));
-        assertThat(actual.getNiss(), equalTo(expected.getNiss()));
+        assertThat(actual.getNationalNumber(), equalTo(expected.getNationalNumber()));
         assertThat(actual.getBirthDate(), equalTo(expected.getBirthDate()));
     }
 }

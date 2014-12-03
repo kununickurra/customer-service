@@ -25,7 +25,7 @@ public class CustomerConverterTest {
     @Test
     public void shouldConvertToEntitySuccessfully() throws Exception {
         // Given
-        Customer expected = createCustomerEntity();
+        Customer expected = createValidCustomerEntity();
         // When
         Customer result = testedClass.toEntity(createCustomerDTO());
         // Then
@@ -40,14 +40,14 @@ public class CustomerConverterTest {
         // When
         CustomerType expected = createCustomerDTO();
         // Then
-        CustomerType result = testedClass.toDto(createCustomerEntity());
+        CustomerType result = testedClass.toDto(createValidCustomerEntity());
         // Need to check fields one by one as the CustomerType class does not have a equals method.
         // and is part of the spec imported from another JAR file.
         // This class is a DTO class generated with a wsdl2java from a wsdl/xsd - note that it is possible to
         // generate also a equals method with wsdl2java.
         assertThat(result.getLastName(), is(expected.getLastName()));
         assertThat(result.getFirstName(), is(expected.getFirstName()));
-        assertThat(result.getNiss(), is(expected.getNiss()));
+        assertThat(result.getNationalNumber(), is(expected.getNationalNumber()));
         assertThat(result.getBirthDate(), is(expected.getBirthDate()));
     }
 

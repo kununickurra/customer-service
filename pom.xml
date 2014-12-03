@@ -20,15 +20,15 @@
         <org.springframework.version>4.1.0.RELEASE</org.springframework.version>
         <junit.version>4.8.1</junit.version>
         <org.mockito.version>1.9.0</org.mockito.version>
-        <customer.service.spec.server.version>1.0.1-SNAPSHOT</customer.service.spec.server.version>
+        <customer.service.spec.version>1.0.2-SNAPSHOT</customer.service.spec.version>
         <org.slf4j.version>1.7.6</org.slf4j.version>
     </properties>
     <dependencyManagement>
         <dependencies>
             <dependency>
-                <groupId>com.cgi.poc</groupId>
-                <artifactId>consumer-service-spec</artifactId>
-                <version>${project.version}</version>
+                <groupId>com.cgi.poc.service</groupId>
+                <artifactId>customer-service-spec</artifactId>
+                <version>${customer.service.spec.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.cgi.poc</groupId>
@@ -44,11 +44,6 @@
                 <groupId>com.cgi.poc</groupId>
                 <artifactId>customer-service-entity</artifactId>
                 <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.cgi.poc</groupId>
-                <artifactId>customer-service-spec-server-jaxws</artifactId>
-                <version>${customer.service.spec.server.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.springframework</groupId>

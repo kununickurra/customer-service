@@ -14,15 +14,18 @@
        http://cxf.apache.org/schemas/configuration/http-jetty.xsd
        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
 
+    <!-- Scan the whole app to create the context -->
     <context:component-scan base-package="com.cgi.poc.customer.service"/>
 
+    <!-- Required cxf beans to run the SOAP service -->
     <import resource="classpath:META-INF/cxf/cxf.xml"/>
 
-    <!-- End point declaration -->
+    <!-- End point declaration for the CustomerService -->
     <jaxws:endpoint id="CustomerService" implementor="com.cgi.poc.customer.service.impl.CustomerServiceImpl"
                     address="http://localhost:9001/CustomerService"/>
 
     <!-- Very simple Jetty configuration that allows easy web service testing & deployment -->
+    <!-- Please check README.txt to check how you can easily start the app -->
     <httpj:engine-factory bus="cxf">
         <httpj:engine port="9001">
             <httpj:connector>
@@ -32,5 +35,4 @@
             </httpj:connector>
         </httpj:engine>
     </httpj:engine-factory>
-
 </beans>
