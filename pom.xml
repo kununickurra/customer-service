@@ -15,6 +15,7 @@
         <module>customer-service-dao</module>
     </modules>
     <properties>
+        <java.version>1.6</java.version>
         <org.apache.cxf.version>3.0.1</org.apache.cxf.version>
         <org.apache.commons.lang3.version>3.1</org.apache.commons.lang3.version>
         <org.springframework.version>4.1.0.RELEASE</org.springframework.version>
@@ -98,4 +99,16 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>${java.version}</source>
+                    <target>${java.version}</target>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 </project>
